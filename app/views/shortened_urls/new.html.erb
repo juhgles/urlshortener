@@ -1,0 +1,7 @@
+<%= form_for @url do |f| %>
+  <%= f.label :long_url %>
+  <%= f.text_field :long_url %>
+  <%= f.label :user_id %>
+  <%= f.number_field :user_id %>
+  <%= f.submit method: "POST" %>
+<% end %>

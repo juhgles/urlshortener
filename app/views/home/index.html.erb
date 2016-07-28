@@ -1,0 +1,6 @@
+<h1>Home Page</h1>
+<% ShortenedUrl.all.each do |url| %>
+  <p>
+    <%= url.long_url %>
+  </p>
+<% end %>

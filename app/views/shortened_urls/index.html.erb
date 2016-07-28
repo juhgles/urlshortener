@@ -1,0 +1,17 @@
+<h1>urls</h1>
+<table class="table">
+  <thead>
+    <th>Long</th>
+    <th>Short</th>
+  </thead>
+  <tbody>
+    <% ShortenedUrl.all.each do |url| %>
+      <tr>
+        <td><%= url.long_url %></td>
+        <td><%= url.shortened_url %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "New Url", new_shortened_urls_path, class: "btn btn-success" %>

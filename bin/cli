@@ -1,0 +1,46 @@
+email_user = nil
+while email_user.nil?
+  puts "Enter your email"
+  email_user = User.find_by(email: gets.chomp)
+end
+puts email_user
+puts "Enter 1 to visit shortened url, or 2 to create a shortened url, or 3 to view topics"
+num = gets.chomp.to_i
+
+if num == 1
+  puts "Enter the shortened url"
+  shortened_url = gets.chomp
+  long_url = ShortenedUrl.find_by_short_url(shortened_url).long_url
+  Launchy.open(long_url)
+
+elsif num == 2
+  puts "Enter your url"
+  url = gets.chomp
+  puts "Enter tags for this url"
+  tags = gets.chomp.split(",").map(&:strip)
+  saved = ShortenedUrl.create_for_user_and_long_url!(email_user, url)
+  unless saved
+    puts "You have the max amount of urls"
+    exit
+  end
+  shortened_url = ShortenedUrl.last
+  tags.each do |name|
+    tag = Tag.find_or_create(name)
+    Tagging.create(tag_id: tag.id, url_id: shortened_url.id)
+  end
+  puts shortened_url.shortened_url
+  Launchy.open(url)
+else
+  tags = Tag.all.map { |tag| tag.name }
+  puts tags.join(", ")
+  chosen_tag = nil
+  until tags.include?(chosen_tag)
+    puts "Choose a tag to view the most popular links"
+    chosen_tag = gets.chomp
+  end
+
+  puts "How many urls would you like to see?"
+  num = gets.chomp.to_i
+  popular_tags = Tag.find_by(name: chosen_tag).most_popular_urls(num)
+  puts popular_tags.map { |tag| tag.long_url }.join(", ")
+end
